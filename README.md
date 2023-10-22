@@ -15,3 +15,7 @@ $ docker-compose up
 ````
 Running the command will kick off all the servers. You might notice the alertmanager server keeps restarting, but don't worry, it's not an issue for this deliverabl: We'll use Grafana to set up the alerts anyway :D. The restart hiccup is interesting, though. According to the official documentation for alertmanager v0.26.0 ([link](https://prometheus.io/docs/alerting/latest/configuration/#msteams_config:~:text=%3Ctmpl_string%3E%2C%20...%20%7D%20%5D-,%3Cmsteams_config%3E,-Microsoft%20Teams%20notifications)), there's an official config called 'msteams_config' designed to send alerts to an MS Teams group. Oddly enough, alertmanager flags an error, claiming 'msteams_config' isn't an official config. Yet, it's clearly listed in the official docs. We can ignore this issue ;)
 
+Once all the containers are running, head over to 'localhost:9090' and check out status/targets. Ensure every server is active, with the exception of alertmanager. Now, let's dive into creating the dashboard and alerts for our MySQL server.
+
+Head to localhost:3000 to access our Grafana server and set a new password. After updating the password, navigate to the left sidebar and select 'Connections'. Choose 'Prometheus' from the data sources and click 'Add new data source'. Just update the 'Prometheus server URL' to 'http://prometheus:9090' and click on 'Save & test'. From now on Grafana is using our prometheus server as data source.
+
