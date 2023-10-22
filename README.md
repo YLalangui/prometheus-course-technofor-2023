@@ -19,3 +19,5 @@ Once all the containers are running, head over to 'localhost:9090' and check out
 
 Head to localhost:3000 to access our Grafana server and set a new password. After updating the password, navigate to the left sidebar and select 'Connections'. Choose 'Prometheus' from the data sources and click 'Add new data source'. Just update the 'Prometheus server URL' to 'http://prometheus:9090' and click on 'Save & test'. From now on Grafana is using our prometheus server as data source.
 
+
+IN PROGRESS...
