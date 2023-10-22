@@ -1,0 +1,106 @@
+version: '3.8'
+
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
+    mysql_data: {}
+    alertmanager_data: {}
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.47.2
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    ports:
+      - 9090:9090
+
+  nodeexporter:
+    image: prom/node-exporter:v1.6.1
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    ports:
+      - 9100:9100
+
+  grafana:
+    image: grafana/grafana:10.1.5
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+
+  redis:
+    image: redis
+    ports:
+     - 6379:6379
+
+  redis-exporter:
+    image: oliver006/redis_exporter
+    command: -redis.addr redis://redis:6379
+    ports:
+      - 9121:9121
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    volumes:
+      - ./alertmanager:/etc/alertmanager
+      - alertmanager_data:/data
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+    restart: unless-stopped
+    ports:
+      - 9093:9093
+  
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.24.0
+    ports:
+    - 9115:9115
+    command:
+    - --config.file=/etc/blackbox/blackbox.yml
+    volumes:
+    - ./blackbox/blackbox.yml:/etc/blackbox/blackbox.yml
+
+  mysql:
+    image: mysql:8.1.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=db
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  mysql-exporter:
+    command:
+     - "--config.my-cnf=/mysql-exporter/.my.cnf"
+    restart: unless-stopped
+    image: prom/mysqld-exporter
+    volumes:
+      - ./mysql-exporter/.my.cnf:/mysql-exporter/.my.cnf
+    ports:
+      - 9104:9104
+    depends_on:
+      - mysql

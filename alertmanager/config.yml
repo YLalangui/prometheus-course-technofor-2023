@@ -1,0 +1,10 @@
+route:
+  receiver: 'msteams'
+  repeat_interval: 1m
+
+receivers:
+  - name: 'msteams'
+    msteams_config:
+      - send_resolved: true
+        webhook_url: https://atos365.webhook.office.com/webhookb2/6d57e57f-a816-4baf-9615-6762f6adef80@33440fc6-b7c7-412c-bb73-0e70b0198d5a/IncomingWebhook/6f90d77c3b554762bbb0291bf7e30d58/85e53602-8f76-4cf7-8881-20f62d4c0752
+        title: "Alert"
