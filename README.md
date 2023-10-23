@@ -31,6 +31,9 @@ Let's set up an alarm to send notifications to an MS Teams group. To do this, we
 
 ![image](https://github.com/YLalangui/prometheus-course-technofor-2023/assets/24701538/035b058c-1928-44a0-836c-5ab4c334356f)
 
+Next, return to the dashboard and modify the metric we adjusted earlier, this time to introduce an alert rule. The rule will be activated when the number of servers drops below 3. In point 3 (Set alert evaluation behavior), create a folder and an evaluation group. Once done, click on 'save rule and exit'.
+
+![image](https://github.com/YLalangui/prometheus-course-technofor-2023/assets/24701538/9177b673-9242-41e7-8d70-71640f538a64)
 
 
 
