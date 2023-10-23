@@ -44,7 +44,11 @@ After everything is set up, we can shut down one MySQL server to simulate a serv
 
 ![image](https://github.com/YLalangui/prometheus-course-technofor-2023/assets/24701538/81a29fac-2292-4644-950d-da25dd3b958c)
 
+An interesting metrics could be monitoring the number of currently used connections in relation to the maximum allowed, especially if your application sees spikes in traffic. If the number of connections nears the maximum, you may face issues with new connections being denied.
 
+To proceed, we'll create a new visualization using the PromQL query: (mysql_global_status_threads_connected / mysql_global_variables_max_connections) * 100. After setting up the visualization, establish an alert in the manner we've done before, and set it to activate when the value surpasses 80%.
 
+![image](https://github.com/YLalangui/prometheus-course-technofor-2023/assets/24701538/db74723e-64d9-4c90-bbbc-3705b6701f88)
 
+In this instance, the alert won't be activated since this isn't a production MySQL server, and we're unlikely to exceed 80%. Nevertheless, creating a new visualization and establishing a beneficial alert is worthwhile.
 
