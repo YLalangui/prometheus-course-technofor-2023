@@ -17,7 +17,11 @@ Running the command will kick off all the servers. You might notice the alertman
 
 Once all the containers are running, head over to 'localhost:9090' and check out status/targets. Ensure every server is active, with the exception of alertmanager. Now, let's dive into creating the dashboard and alerts for our MySQL server.
 
-Head to localhost:3000 to access our Grafana server and set a new password. After updating the password, navigate to the left sidebar and select 'Connections'. Choose 'Prometheus' from the data sources and click 'Add new data source'. Just update the 'Prometheus server URL' to 'http://prometheus:9090' and click on 'Save & test'. From now on Grafana is using our prometheus server as data source.
+Head to localhost:3000 to access our Grafana server and set a new password. After updating the password, navigate to the left sidebar and select 'Connections'. Choose 'Prometheus' from the Data Sources and click 'Add new data source'. Just update the 'Prometheus server URL' to 'http://prometheus:9090' and click on 'Save & test'. From now on Grafana is using our prometheus server as data source.
 
 
-IN PROGRESS...
+Let's set up a Dashboard. To begin, select 'Dashboards' from the left menu and then click 'new'. Instead of building a dashboard from scratch, Grafana provides us with a vast selection of pre-configured dashboards developed by both Grafana itself and third-party contributors. Check them out here: [https://grafana.com/grafana/dashboards/]. Notably, there are several interesting dashboards created for MySQL. To utilize these dashboards, click on 'new' followed by 'Import'. Next, we'll need to input an ID to specify the desired dashboard. For this MySQL instance, use the ID "7362". Enter this number into the "Import via grafana.com" field and click 'Load'. In the following window, scroll down and select 'Prometheus' as the Data Source, then click 'Import'. This will display a dashboard filled with various metrics. However, it lacks alerts, which we'll set up next.
+
+
+
+
