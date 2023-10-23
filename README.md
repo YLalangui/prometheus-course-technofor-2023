@@ -4,12 +4,12 @@
 This project was developed for the course offered by TechnoFor, focusing on Prometheus. The core objective of this project is to establish an instance of Prometheus and Grafana to monitor a MySQL server. While the included Docker Compose file displays a variety of exporters and servers, serving as examples from the course, the primary deliverable centers on the MySQL server monitoring. This documentation dives into the server configurations and elaborates on the creation of dashboards and alerts.
 
 ## Files involved in MySQL monitoring
-1. `docker-compose.yml`: This Docker Compose includes extra services we made during the course, but the key ones for this project are prometheus, grafana, mysql, and the mysql-exporter services. Some of these services come with config files, which we'll dive into in this section.
-2. `prometheus/prometheus.yml`: The scrape configuration lists the endpoints to be scraped, with `mysql-exporter` as the key `job_name` for this specific deliverable. Note that we've set the target as `mysql:3306` in this configuration. This represents the server name (or container name in this context) and the port where our MySQL server runs.
+1. `docker-compose.yml`: This Docker Compose includes extra services we made during the course, but the key ones for this project are prometheus, grafana, three mysql servers, and the mysql-exporter services. Some of these services come with config files, which we'll dive into in this section.
+2. `prometheus/prometheus.yml`: The scrape configuration lists the endpoints to be scraped, with `mysql-exporter` as the key `job_name` for this specific deliverable. Note that we've set the target as `mysql:3306`, `mysql2:3306` and `mysql3:3306` in this configuration to simulate three servers. This represents the server name (or container name in this context) and the port where our MySQL servers runs.
 3. `mysql-exporter/.my.cnf`: In the latest version of mysql-exporter by Prometheus, you no longer need to specify the MySQL server connection using environment variables. Instead, you'll require a .my-cfn file that contains the database username and password for our MySQL server.
 
 ## Prometheus/MySQL deliverable
-To set up the environment with Prometheus, Grafana, MySQL, and mysql-exporter for this project, run:
+To set up the environment with Prometheus, Grafana, three MySQL servers, and mysql-exporter for this project, run:
 ````
 $ docker-compose up
 ````
@@ -34,6 +34,16 @@ Let's set up an alarm to send notifications to an MS Teams group. To do this, we
 Next, return to the dashboard and modify the metric we adjusted earlier, this time to introduce an alert rule. The rule will be activated when the number of servers drops below 3. In point 3 (Set alert evaluation behavior), create a folder and an evaluation group. Once done, click on 'save rule and exit'.
 
 ![image](https://github.com/YLalangui/prometheus-course-technofor-2023/assets/24701538/9177b673-9242-41e7-8d70-71640f538a64)
+
+Proceed to the 'Alerting' section in the left menu and select 'Notification policies'. Modify the existing policy and, for the 'Default contact point', choose our previously created contact point. Adjust any desired 'Timing options' and then finalize by clicking on 'Update default policy'.
+
+
+![image](https://github.com/YLalangui/prometheus-course-technofor-2023/assets/24701538/571ceee0-5c79-41d1-a091-e836f290304a)
+
+After everything is set up, we can shut down one MySQL server to simulate a server outage. Given the dashboard's configuration, we may need to wait up to 5 minutes to observe Grafana triggering an alert and sending messages to our MS Teams group.
+
+![image](https://github.com/YLalangui/prometheus-course-technofor-2023/assets/24701538/81a29fac-2292-4644-950d-da25dd3b958c)
+
 
 
 
