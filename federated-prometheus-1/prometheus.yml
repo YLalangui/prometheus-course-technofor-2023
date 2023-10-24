@@ -3,9 +3,9 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: prometheus
+  - job_name: federated-prometheus-1
     static_configs:
-      - targets: ["federated-prometheus-1:9091"]
+      - targets: ["federated-prometheus-1:9090"]
 
   - job_name: federated-mysql-exporter-1
     static_configs:

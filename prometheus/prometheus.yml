@@ -15,16 +15,21 @@ rule_files:
 
 # A scrape configuration containing exactly one endpoint to scrape.
 scrape_configs:
-  - job_name: 'nodeexporter'
-    scrape_interval: 5s
-    static_configs:
-      - targets: ['nodeexporter:9100']
 
   - job_name: 'prometheus'
     scrape_interval: 10s
     static_configs:
       - targets: ['prometheus:9090']
+
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana:3000']
   
+  - job_name: 'node-exporter'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['node-exporter:9100']
+
   - job_name: 'redis-exporter'
     static_configs:
       - targets: ["redis-exporter:9121"]
@@ -33,10 +38,6 @@ scrape_configs:
     static_configs:
       - targets: ['alertmanager:9093']
 
-  - job_name: 'grafana'
-    static_configs:
-      - targets: ['grafana:3000']
-  
   - job_name: blackbox
     metrics_path: /probe
     scrape_interval: 5s
@@ -63,9 +64,9 @@ scrape_configs:
   - job_name: mysql-exporter
     static_configs:
       - targets:
-        - mysql:3306
-        - mysql2:3306
-        - mysql3:3306
+        - mysql-1:3306
+        - mysql-2:3306
+        - mysql-3:3306
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -80,12 +81,13 @@ scrape_configs:
     metrics_path: '/federate'
     params:
       'match[]':
-        - '{job="prometheus"}'
+        - '{job="federated-prometheus-1"}'
         - '{job="federated-mysql-exporter-1"}'
+        - '{job="federated-prometheus-2"}'
         - '{job="federated-mysql-exporter-2"}'
         - '{__name__=~"job:.*"}'
     static_configs:
       - targets:
-        - 'federated-prometheus-1:9091'
-        - 'federated-prometheus-2:9092'
+        - 'federated-prometheus-1:9090'
+        - 'federated-prometheus-2:9090'
 
