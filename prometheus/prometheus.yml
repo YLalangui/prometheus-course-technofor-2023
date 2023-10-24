@@ -73,4 +73,19 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: mysql-exporter:9104
+  
+  - job_name: 'federate'
+    scrape_interval: 15s
+    honor_labels: true
+    metrics_path: '/federate'
+    params:
+      'match[]':
+        - '{job="prometheus"}'
+        - '{job="federated-mysql-exporter-1"}'
+        - '{job="federated-mysql-exporter-2"}'
+        - '{__name__=~"job:.*"}'
+    static_configs:
+      - targets:
+        - 'federated-prometheus-1:9091'
+        - 'federated-prometheus-2:9092'
 

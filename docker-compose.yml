@@ -7,6 +7,8 @@ volumes:
     mysql2_data: {}
     mysql3_data: {}
     alertmanager_data: {}
+    federated-mysql-1_data: {}
+    federated-mysql-2_data: {}
 
 services:
   prometheus:
@@ -130,3 +132,73 @@ services:
       - 9104:9104
     depends_on:
       - mysql
+
+###### FEDEREATION PART ########
+  
+  federated-prometheus-1:
+    image: prom/prometheus:v2.5.0
+    ports:
+    - 9091:9091
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --web.listen-address=0.0.0.0:9091
+    volumes:
+    - ./federated-prometheus-1/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  
+  federated-mysql-1:
+    image: mysql:8.1.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=db
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+    volumes:
+      - federated-mysql-1_data:/var/lib/mysql
+    ports:
+      - 3309:3306
+
+  federated-mysql-exporter-1:
+    command:
+     - "--config.my-cnf=/mysql-exporter/.my.cnf"
+    restart: unless-stopped
+    image: prom/mysqld-exporter
+    volumes:
+      - ./mysql-exporter/.my.cnf:/mysql-exporter/.my.cnf
+    ports:
+      - 9105:9104
+    depends_on:
+      - federated-mysql-1
+  
+  federated-prometheus-2:
+    image: prom/prometheus:v2.5.0
+    ports:
+    - 9092:9092
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --web.listen-address=0.0.0.0:9092
+    volumes:
+    - ./federated-prometheus-2/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  
+  federated-mysql-2:
+    image: mysql:8.1.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=db
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+    volumes:
+      - federated-mysql-2_data:/var/lib/mysql
+    ports:
+      - 3310:3306
+
+  federated-mysql-exporter-2:
+    command:
+     - "--config.my-cnf=/mysql-exporter/.my.cnf"
+    restart: unless-stopped
+    image: prom/mysqld-exporter
+    volumes:
+      - ./mysql-exporter/.my.cnf:/mysql-exporter/.my.cnf
+    ports:
+      - 9106:9104
+    depends_on:
+      - federated-mysql-2
