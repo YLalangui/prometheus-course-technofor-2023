@@ -1,12 +1,24 @@
 # prometheus-course-technofor-2023
 
 ## Introduction
-This project was developed for the course offered by TechnoFor, focusing on Prometheus. The core objective of this project is to establish an instance of Prometheus and Grafana to monitor a MySQL server. While the included Docker Compose file displays a variety of exporters and servers, serving as examples from the course, the primary deliverable centers on the MySQL server monitoring. This documentation dives into the server configurations and elaborates on the creation of dashboards and alerts.
+This project was developed for the course offered by TechnoFor, focusing on Prometheus. 
+
+The primary goal of this project is divided into three main tasks:
+
+1. Initial Setup: Establish an instance of both Prometheus and Grafana to monitor a single MySQL server.
+
+2. Expansion & Alerts: Add two more MySQL servers. During this phase, we will also set up alerts. For instance, we'll monitor the total count of servers or compare the current number of used connections to the maximum allowed connections.
+
+3. Federation Implementation: In this task, we will implement federation by introducing two additional Prometheus-MySQL pairs. The same Prometheus server from the first two tasks will be used to monitor these newly added MySQL servers via their respective Prometheus servers (Federation).
+
+
+While the included Docker Compose file displays a variety of exporters and servers, serving as examples from the course, the primary deliverable centers on the MySQL server monitoring. This documentation dives into the server configurations and elaborates on the creation of dashboards and alerts.
 
 ## Files involved in MySQL monitoring
-1. `docker-compose.yml`: This Docker Compose includes extra services we made during the course, but the key ones for this project are prometheus, grafana, three mysql servers, and the mysql-exporter services. Some of these services come with config files, which we'll dive into in this section.
-2. `prometheus/prometheus.yml`: The scrape configuration lists the endpoints to be scraped, with `mysql-exporter` as the key `job_name` for this specific deliverable. Note that we've set the target as `mysql:3306`, `mysql2:3306` and `mysql3:3306` in this configuration to simulate three servers. This represents the server name (or container name in this context) and the port where our MySQL servers runs.
-3. `mysql-exporter/.my.cnf`: In the latest version of mysql-exporter by Prometheus, you no longer need to specify the MySQL server connection using environment variables. Instead, you'll require a .my-cfn file that contains the database username and password for our MySQL server.
+1. `docker-compose.yml`: This Docker Compose includes extra services we made during the course, but the key ones for this project are prometheus, grafana, three mysql servers, the mysql-exporter services and `federated-*` services. Some of these services come with config files, which we'll dive into in this section.
+2. `prometheus/prometheus.yml`: The scrape configuration lists the endpoints to be scraped, with `mysql-exporter` as the key `job_name` for the second task. Note that we've set the target as `mysql-1:3306`, `mysql-2:3306` and `mysql-3:3306` in this configuration to simulate three MySQL servers. This represents the server name (or container name in this context) and the port where our MySQL servers runs. This approach, concerning MySQL and mysql-exporter, will be implemented in the third task focusing on federation.
+3. `mysql-exporter/.my.cnf`: In the latest version of mysql-exporter by Prometheus, you no longer need to specify the MySQL server connection using environment variables. Instead, you'll require a .my.cfn file that contains the database username and password for our MySQL server. The .my.cnf file will remain consistent across all MySQL instances for this project.
+4. `federated-prometheus-1` & `federated-prometheus-2`: These configuration files are for the third task focused on federation for the Prometheus services monitoring the MySQL servers. Their structure is similar to that of `prometheus/prometheus.yml`.
 
 ## Prometheus/MySQL deliverable
 To set up the environment with Prometheus, Grafana, three MySQL servers, and mysql-exporter for this project, run:
