@@ -4,6 +4,8 @@ volumes:
     prometheus_data: {}
     grafana_data: {}
     mysql_data: {}
+    mysql2_data: {}
+    mysql3_data: {}
     alertmanager_data: {}
 
 services:
@@ -92,6 +94,30 @@ services:
       - mysql_data:/var/lib/mysql
     ports:
       - 3306:3306
+  
+  mysql2:
+    image: mysql:8.1.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=db
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+    volumes:
+      - mysql2_data:/var/lib/mysql
+    ports:
+      - 3307:3306
+  
+  mysql3:
+    image: mysql:8.1.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=db
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+    volumes:
+      - mysql3_data:/var/lib/mysql
+    ports:
+      - 3308:3306
 
   mysql-exporter:
     command:
