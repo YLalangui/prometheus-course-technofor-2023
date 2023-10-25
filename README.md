@@ -15,7 +15,7 @@ The primary goal of this project is divided into three main tasks:
 While the included Docker Compose file displays a variety of exporters and servers, serving as examples from the course, the primary deliverable centers on the MySQL server monitoring. This documentation dives into the server configurations and elaborates on the creation of dashboards and alerts.
 
 ## Files involved in MySQL monitoring
-1. `docker-compose.yml`: This Docker Compose includes extra services we made during the course, but the key ones for this project are prometheus, grafana, three mysql servers, the mysql-exporter services and `federated-*` services. Some of these services come with config files, which we'll dive into in this section.
+1. `docker-compose.yml`: This Docker Compose includes extra services we made during the course, but the key ones for this project are prometheus, grafana, three mysql servers, the mysql-exporter services and `federated-*` services (it includes two more mysql servers). Some of these services come with config files, which we'll dive into in this section.
 
 2. `prometheus/prometheus.yml`: The scrape configuration lists the endpoints to be scraped, with `mysql-exporter` as the key `job_name` for the second task. Note that we've set the target as `mysql-1:3306`, `mysql-2:3306` and `mysql-3:3306` in this configuration to simulate three MySQL servers. This represents the server name (or container name in this context) and the port where our MySQL servers runs. This approach, concerning MySQL and mysql-exporter, will be implemented in the third task focusing on federation.
 
@@ -32,7 +32,7 @@ Running the command will kick off all the servers. You might notice the alertman
 
 Once all the containers are running, head over to 'localhost:9090' and check out status/targets. Ensure every server is active, with the exception of alertmanager. Now, let's dive into creating the dashboard and alerts for our MySQL server.
 
-## Task 1 -> MySQL Monitoring. A New Metric.
+## Task 1 -> MySQL Server. A New Monitoring.
 
 Head to localhost:3000 to access our Grafana server and set a new password. After updating the password, navigate to the left sidebar and select 'Connections'. Choose 'Prometheus' from the Data Sources and click 'Add new data source'. Just update the 'Prometheus server URL' to 'http://prometheus:9090' and click on 'Save & test'. From now on Grafana is using our prometheus server as data source.
 
@@ -45,7 +45,8 @@ You might notice that certain metrics draw from node-exporter data, leading to "
 
 ## Task 2 -> Alert creation. The metric strikes back.
 
-Let's set up an alarm to send notifications to an MS Teams group. To do this, we'll modify the 'MySQL Connection' graph in the Dashboard we created in the previous task. We'll measure the number of instances, which will default to three. Thus, the promql command should be `sum(mysql_global_status_threads_connected)`, which will display a graph indicating three MySQL instances. Once done, click 'Apply'. 
+Let's set up an alarm to send notifications to an MS Teams group. To do this, we'll modify the 'MySQL Connection' graph in the Dashboard we created in the previous task. We'll measure the number of instances, which will default to five (three mysql servers for the first two tasks and two more myqsl server for the third task about federation). Thus, the promql command should be `sum(mysql_global_status_threads_connected)`, which will display a graph indicating five MySQL instances. Once done, click 'Apply'. 
+
 
 Next, navigate to the 'Alerting' section in the left menu and select 'contact points'. Create a new contact point and assign it a unique name. For integration, choose 'Microsoft Teams', then input the webhook URL of your team group and finally click on 'Save contact point'.
 
@@ -60,7 +61,7 @@ Proceed to the 'Alerting' section in the left menu and select 'Notification poli
 
 ![image](https://github.com/YLalangui/prometheus-course-technofor-2023/assets/24701538/571ceee0-5c79-41d1-a091-e836f290304a)
 
-After everything is set up, we can shut down one MySQL server to simulate a server outage. Given the dashboard's configuration, we may need to wait up to 5 minutes to observe Grafana triggering an alert and sending messages to our MS Teams group.
+After everything is set up, we can shut down two or more MySQL servers to simulate a server outage. Given the dashboard's configuration, we may need to wait up to 5 minutes to observe Grafana triggering an alert and sending messages to our MS Teams group.
 
 ![image](https://github.com/YLalangui/prometheus-course-technofor-2023/assets/24701538/81a29fac-2292-4644-950d-da25dd3b958c)
 
@@ -74,4 +75,4 @@ In this instance, the alert won't be activated since this isn't a production MyS
 
 ## Task 3 -> Return of the federation.
 
-IN PROGRESS...
+In the third task, we'll emulate the federation capability provided by Prometheus. Federation in Prometheus allows data collection from multiple sources, aggregating and serving it from a central server. For this setup, the central server is just the Prometheus server we've been using for the last two tasks. All components necessary for federation were initialized during the first task, as executing "docker-compose up" brought up the relevant federation components.
