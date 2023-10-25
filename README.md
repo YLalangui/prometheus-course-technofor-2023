@@ -47,6 +47,8 @@ You might notice that certain metrics draw from node-exporter data, leading to "
 
 Let's set up an alarm to send notifications to an MS Teams group. To do this, we'll modify the 'MySQL Connection' graph in the Dashboard we created in the previous task. We'll measure the number of instances, which will default to five (three mysql servers for the first two tasks and two more myqsl server for the third task about federation). Thus, the promql command should be `sum(mysql_global_status_threads_connected)`, which will display a graph indicating five MySQL instances. Once done, click 'Apply'. 
 
+![image](https://github.com/YLalangui/prometheus-course-technofor-2023/assets/24701538/0962d123-4bcc-49b2-a1ce-016b9161cc96)
+
 
 Next, navigate to the 'Alerting' section in the left menu and select 'contact points'. Create a new contact point and assign it a unique name. For integration, choose 'Microsoft Teams', then input the webhook URL of your team group and finally click on 'Save contact point'.
 
